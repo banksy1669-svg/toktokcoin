@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body{margin:0;font-family:'Inter',sans-serif;background:#f2f2f2;}
+.header{padding:16px;font-size:18px;font-weight:600;display:flex;justify-content:space-between;}
+.card{background:#fff;margin:10px;border-radius:14px;padding:14px;}
+.profile{display:flex;align-items:center;gap:10px;}
+.profile img{width:45px;height:45px;border-radius:50%;}
+.input{margin-top:10px;}
+.input input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid #ddd;
+box-sizing:border-box; /* 👈 เพิ่มตัวนี้ */
+}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.box{
+background:#f5f5f5;
+border-radius:12px;
+padding:14px;
+text-align:center;
+border:2px solid transparent;
+}
+.box.active{border:2px solid #ff2d55;background:#fff;}
+
+.coin-icon{
+width:19px;
+margin-right:2px; /* 👈 ลดลง */
+}
+
+.price{font-size:12px;color:#666;}
+
+.section{display:flex;align-items:center;gap:12px;}
+.section img{width:55px;}
+
+.footer{
+position:fixed;
+bottom:0;
+width:100%;
+background:#fff;
+padding:10px 12px; /* 👈 เพิ่มซ้ายขวา */
+box-sizing:border-box;
+}
+.pay{
+background:#ff2d55;
+color:#fff;
+padding:14px;
+text-align:center;
+border-radius:12px;
+font-weight:500;
+margin-top:12px; /* 👈 เพิ่มบรรทัดนี้ */
+}
+
+/* MODAL */
+.overlay{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.4);
+display:none;
+
+/* 🔥 เปลี่ยนตรงนี้ */
+justify-content:center;
+align-items:flex-end;
+}
+.modal{
+background:#fff;
+width:100%;
+height:92%; /* 👈 เอาค่านี้ */
+border-radius:20px 20px 0 0;
+
+display:flex;
+flex-direction:column;
+overflow:hidden;
+padding:0;
+}
+
+/* OPTION */
+.option{
+border:1px solid #ddd;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+display:flex;
+align-items:center;
+gap:5px; /* 👈 เพิ่ม */
+cursor:pointer;
+}
+.option.active{border:2px solid #ff2d55;}
+
+.option img{
+height:20px;
+}
+
+.dot{
+width:10px;
+height:10px;
+border-radius:50%;
+display:inline-block;
+margin:5px;
+}
+.green{background:#00c853;}
+.red{background:#ff2d55;}
+
+
+/* SUCCESS */
+.check{
+width:70px;height:70px;
+border-radius:50%;
+background:#4CAF50;
+color:#fff;
+font-size:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:20px auto;
+}
+.option{
+margin-top:10px;
+}
+
+.card-logos{
+display:flex;
+gap:6px;         /* 👈 ระยะห่างโลโก้ */
+margin-left:auto; /* 👈 ดันไปขวา */
+}
+
+.card-logos img{
+height:18px;
+}
+
+.loader{
+width:50px;
+height:50px;
+border:4px solid #eee;
+border-top:4px solid #ff2d55;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:20px auto;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+.overlay{
+transition:0.3s;
+}
+
+.success-title{
+font-size:18px;
+font-weight:600;
+margin-top:10px;
+}
+
+.success-desc{
+font-size:13px;
+color:#777;
+margin-top:8px;
+line-height:1.5;
+}
+.footer{
+box-shadow:0 -2px 8px rgba(0,0,0,0.08);
+}
+.pay-option{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px;
+border-bottom:1px solid #eee;
+cursor:pointer;
+}
+
+.left{
+display:flex;
+align-items:center;
+gap:10px;
+font-size:14px;
+}
+
+.left img{
+width:22px;
+height:22px;
+object-fit:contain;
+}
+
+.pay-option img{
+height:22px;
+}
+
+.radio{
+width:10px;
+height:10px;
+border-radius:50%;
+border:3px solid #ccc;
+}
+
+.pay-option.active .radio{
+border:3px solid #ff2d55;
+}
+.pay.disabled{
+background:#ccc;
+color:#ffffff;
+pointer-events:none;
+}
+
+.pay{
+display:flex;
+align-items:center;   /* 👈 ตัวนี้ทำให้ตรงแนวเดียว */
+justify-content:center;
+gap:6px;
+font-size:14px;
+}
+
+ 
+.safe-bar{
+background:#e6f7f1;
+color:#00a86b;
+
+font-size:12px;
+padding:4px 15px;   /* 👈 เพิ่มซ้าย-ขวา = กว้างขึ้น */
+
+display:flex;
+align-items:center;
+gap:6px;
+
+width:fit-content;
+margin:-14px auto 8px auto;
+
+font-weight:400;
+
+/* 👇 คางหมู */
+clip-path: polygon(0% 0%, 100% 0%, 94% 100%, 6% 100%);
+}
+
+
+.safe-bar svg{
+width:11px;
+height:11px;
+}
+
+
+
+.coin-text{
+font-size:16px;   /* 👈 ปรับขนาด */
+font-weight:700;  /* 👈 หนาขึ้น */
+display:flex;
+align-items:center;
+justify-content:center;
+gap:1px;
+}
+.modal > div:last-child{
+margin-top:auto;
+}
+
+.success-modal{
+display:flex;
+flex-direction:column;
+justify-content:center;  /* 👈 ดันขึ้นกลาง */
+align-items:center;
+text-align:center;
+padding:20px;
+height:auto;             /* 👈 สำคัญ ไม่ให้ยืด */
+border-radius:16px;      /* 👈 ให้เหมือน popup */
+}
+
+.safe-icon{
+width:12px;
+height:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:6px;">
+    <img src="https://www.pngall.com/wp-content/uploads/13/TikTok-Logo-PNG-Image-HD.png" style="width:20px;height:20px;">
+    <span>เหรียญ TikTok</span>
+  </div>
+  <div>?</div>
+</div>
+
+ 
+
+
+<div class="card">
+  <div class="safe-bar">
+    <svg fill="currentColor" class="text-color-UIShapeText2OnSuccess" color="inherit" font-size="9.58px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"><path d="M22.6 1.24c-6.47 5.47-12.29 6.74-15.34 7C6.06 8.34 5 9.32 5 10.53V23.2c0 14.16 14.76 21.85 18.26 23.47.47.22 1 .22 1.47 0C28.23 45.05 43 37.37 43 23.2V10.52c0-1.2-1.06-2.18-2.26-2.28-3.06-.26-8.88-1.53-15.35-7a2.17 2.17 0 0 0-2.79 0Zm5.62 12.46a4.83 4.83 0 0 0 4.86 4.8l-.04 3.45c-1.77 0-3.4-.53-4.75-1.43l-.09 6.99a6.64 6.64 0 0 1-6.69 6.3 6.44 6.44 0 0 1-6.53-6.45 6.63 6.63 0 0 1 7.61-6.4l-.04 3.7a2.93 2.93 0 0 0-3.88 2.7 2.85 2.85 0 0 0 2.89 2.85 2.93 2.93 0 0 0 2.96-2.85l.16-13.66h3.54Z"></path></svg>    </svg>
+
+    <span>การชำระเงินที่ปลอดภัย ›</span>
+  </div>
+<div class="profile">
+<img src="https://i.postimg.cc/dtH5hdFV/tiktok-icon-free-png.png">
+<div><b>Mr.Rick</b></div>
+</div>
+
+<div class="input">
+<input id="uid" placeholder="ชื่อผู้ใช้ TikTok" oninput="checkReady()">
+</div>
+</div>
+
+<!-- 🔥 เติมเงิน -->
+<div class="card">
+<div style="margin-bottom:10px;">
+  <div style="font-weight:600;">เติมเงิน</div>
+  <div style="font-size:12px;color:#ff2d55;margin-top:4px;">
+    ประหยัดประมาณ 25% ด้วยค่าบริการของบุคคลที่สามที่ถูกลง
+  </div>
+</div>
+<div class="grid">
+
+<div class="box" onclick="select(this,1000,350)">
+  <div class="coin-text">
+    <img class="coin-icon" src="https://i.postimg.cc/prJkPGQS/dawn-hold-paelng-cak-svg.png">1,000
+  </div>
+<div class="price">THB350</div>
+</div>
+
+<div class="box" onclick="select(this,5000,1700)">
+  <div class="coin-text">
+    <img class="coin-icon" src="https://i.postimg.cc/prJkPGQS/dawn-hold-paelng-cak-svg.png">5,000
+  </div>
+<div class="price">THB1,700</div>
+</div>
+
+<div class="box" onclick="select(this,10000,3400)">
+  <div class="coin-text">
+    <img class="coin-icon" src="https://i.postimg.cc/prJkPGQS/dawn-hold-paelng-cak-svg.png">10,000
+  </div>
+<div class="price">THB3,400</div>
+</div>
+
+<div class="box" onclick="select(this,20000,6800)">
+  <div class="coin-text">
+    <img class="coin-icon" src="https://i.postimg.cc/prJkPGQS/dawn-hold-paelng-cak-svg.png">20,000
+  </div>
+<div class="price">THB6,800</div>
+</div>
+
+<div class="box" onclick="select(this,30000,10200)">
+  <div class="coin-text">
+    <img class="coin-icon" src="https://i.postimg.cc/prJkPGQS/dawn-hold-paelng-cak-svg.png">30,000
+  </div>
+<div class="price">THB10,200</div>
+</div>
+
+<div class="box" onclick="select(this,40000,13600)">
+  <div class="coin-text">
+    <img class="coin-icon" src="https://i.postimg.cc/prJkPGQS/dawn-hold-paelng-cak-svg.png">40,000
+  </div>
+<div class="price">THB13,600</div>
+</div>
+
+</div>
+</div>
+
+<!-- 🔥 เชิญเพื่อน -->
+<div class="card">
+<div style="display:flex;align-items:center;">
+
+  <!-- ซ้าย (รูป + ข้อความ) -->
+  <div style="display:flex;align-items:center;gap:10px;flex:1;">
+
+    <img src="https://sf16-sg.tiktokcdn.com/obj/eden-sg/lm_alsshd_rvarpa/ljhwZthlaukjlkulzlp/referral/icon_invite_rewards_v2.png" style="width:45px;">
+
+    <div>
+      <div style="font-size:15px;">
+        เชิญเพื่อนและรับสูงสุด 
+        <span style="color:#ff7a00;font-weight:600;">$150</span>
+        ต่อเพื่อนหนึ่งคน
+      </div>
+      <div style="font-size:12px;color:#999;">
+        ยิ่งเชิญมาก ยิ่งได้เงินมาก
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ขวาสุด -->
+  <div style="color:#bbb;font-size:25px;">
+    ›
+  </div>
+
+</div>
+</div>
+
+<!-- 🔥 เพิ่มหน้าจอ -->
+<div class="card">
+<div style="display:flex;align-items:center;">
+
+  <!-- ซ้าย -->
+  <div style="display:flex;align-items:center;gap:10px;flex:1;">
+
+    <img src="https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/unified-wallet/web-recharge-mobile-ssr/resource/image/home_screen_thumbnail.dee906dc.png" style="width:45px;">
+
+    <div>
+      <div style="font-size:15px;">
+        เพิ่มหน้านี้ลงในหน้าจอหลัก
+      </div>
+      <div style="font-size:12px;color:#999;">
+        แตะครั้งเดียว
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ขวา (ปุ่มเพิ่ม) -->
+  <div style="color:#ff2d55;font-size:15px;font-weight:500;">
+    เพิ่ม
+  </div>
+
+</div>
+</div>
+
+<div class="footer">
+
+  <!-- 🔥 ข้อเสนอพิเศษ -->
+  <div style="margin-bottom:8px;">
+    
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:13px;color:#888;">ข้อเสนอพิเศษ</div>
+      <div style="font-size:13px;color:#ff2d55;">
+        ปลดล็อกเงินคืน 5% ของคุณ >
+      </div>
+    </div>
+
+    <div style="display:flex;gap:6px;margin-top:6px;justify-content:center;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/visa_acffbd.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/mastercard_light_5865fd.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/discover_4adc90.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/diners_0faca9.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/card_american_express_51cd3f.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/paypal-light_839c52.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/light_linepay_50ebc8.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/true-money-border_772a17.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/MjAyNjAzMDktMTc0MTUyX2ZlYzQ3MC5wbmc=.png" style="height:15px;">
+      <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/BankTransfer_facae0.png" style="height:15px;">
+      <img src="https://i.postimg.cc/ZqC8XDvX/Paypal-2014-logo.png" style="height:15px;">
+    </div>
+
+  </div>
+
+  <!-- 🔥 ปุ่มซื้อ -->
+<div class="pay disabled" onclick="openPay()" id="payBtn">
+<svg viewBox="0 0 48 48" width="20" fill="#fff">
+<path d="M28.22 13.7a4.83 4.83 0 0 0 4.86 4.8l-.04 3.45c-1.77 0-3.4-.53-4.75-1.43l-.09 6.99a6.64 6.64 0 0 1-6.69 6.3 6.44 6.44 0 0 1-6.53-6.45 6.63 6.63 0 0 1 7.61-6.4l-.04 3.7a2.97 2.97 0 0 0-3.88 2.7 2.85 2.85 0 0 0 2.89 2.85 2.93 2.93 0 0 0 2.96-2.85l.16-13.66h3.54Z"></path><path d="M5 23.15V10.5c0-1.2 1.06-2.17 2.26-2.28 3.05-.25 8.87-1.52 15.34-6.99.8-.67 2-.67 2.8 0 6.46 5.46 12.28 6.74 15.34 7 1.2.1 2.26 1.07 2.26 2.27v12.65c0 14.13-14.77 21.8-18.27 23.43-.47.22-1 .22-1.47 0C19.76 44.96 5 37.28 5 23.15Zm4-11.1v11.1c0 5.57 2.88 10.04 6.56 13.5 3.1 2.91 6.5 4.86 8.44 5.85a37.07 37.07 0 0 0 8.43-5.85C36.11 33.2 39 28.72 39 23.15V12.04c-3.65-.53-9.1-2.16-15-6.8-5.91 4.64-11.35 6.27-15 6.8Z"></path></svg>
+
+<span id="payText">ซื้อในราคา THB0</span>
+
+</div>
+
+</div>
+<!-- 🔥 แลกเปลี่ยน -->
+<div class="card" style="opacity:0.6;">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    
+    <div>
+      <div style="font-size:13px;">แลกเปลี่ยน</div>
+      <div style="font-size:12px;color:#999;">
+        ยอดเงินของขวัญ LIVE: $0.00 
+(<img src="https://i.postimg.cc/prJkPGQS/dawn-hold-paelng-cak-svg.png" 
+style="width:11px;vertical-align:-2px;margin-right:3px;">0)
+      </div>
+    </div>
+
+    <div style="color:#999;">›</div>
+
+  </div>
+</div>
+
+<!-- 🔥 TikTok logo ล่างสุด -->
+<div style="text-align:center;margin:20px 0;color:#ccc;font-size:14px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="69" height="16" fill="none" viewBox="0 0 69 16"><path fill="#161823" fill-opacity="0.1" d="M28.207 6.681a1.399 1.399 0 1 0-.001-2.798 1.399 1.399 0 0 0 0 2.798M40.594 3.883h8.879l-.797 2.483h-2.449v9.181999999999999h-2.81V6.364h-2.492l-.33.006zM26.813 7.848v-.253h2.781l.001.253.003 6.968-.007.731H26.83v-.396zM31.047 4.4v-.55h2.75v5.433000000000001l2.781-2.707h3.316l-3.482 3.381 3.9 5.583H37.25l-2.603-3.873-.825.798v3.076l-2.767-.006v-.248zM58.77 4.4v-.55h2.75v.479l.007 4.954 2.775-2.706h3.316l-3.48 3.385 3.906 5.583h-3.061l-2.606-3.873-.824.798v3.076h-2.766v-.248zM48.063 10.818a4.781 4.781 0 1 1 9.197 1.859 4.8 4.8 0 0 1-1.757 2.145 4.77 4.77 0 0 1-2.65.808 4.78 4.78 0 0 1-3.4-1.404 4.8 4.8 0 0 1-1.038-1.564 4.8 4.8 0 0 1-.352-1.844m6.95 0c0-1.292-.89-2.303-2.179-2.3-1.29 0-2.162 1.012-2.162 2.304s.866 2.313 2.162 2.311c1.297 0 2.18-1.028 2.179-2.32zM17.496 3.883h8.674l-.797 2.483H23.12v9.177h-2.8V6.365l-2.822.006zM14.686 3.843c-.981-.03-1.87-.5-2.54-1.128A3.69 3.69 0 0 1 11.006 0H8.276v10.53c0 1.721-1.031 2.734-2.296 2.734a2.3 2.3 0 0 1-1.77-.803 2.3 2.3 0 0 1-.468-.879 2.29 2.29 0 0 1 .318-1.917 2.29 2.29 0 0 1 2.662-.866v-2.78a3.4 3.4 0 0 0-.742-.079 5.025 5.025 0 0 0-4.644 3.104 5.034 5.034 0 0 0 3.661 6.86 5.023 5.023 0 0 0 6.007-4.934V5.302c1.058.733 2.323 1.078 3.674 1.103z"></path></svg>
+</div>
+<!-- 🔥 PAYMENT (คุณใส่รูปเองตรงนี้) -->
+<div class="overlay" id="payBox">
+<div class="modal">
+
+<!-- HEADER -->
+<div style="padding:14px;border-bottom:1px solid #eee;font-weight:600;text-align:center;">
+  สรุปคำสั่งซื้อ
+</div>
+
+<!-- SAFE -->
+<div style="background:#e6f7f1;color:#00a86b;font-size:12px;padding:6px;display:flex;justify-content:center;align-items:center;gap:6px;">
+
+  <svg fill="currentColor" viewBox="0 0 48 48" width="14" height="14">
+    <path d="M22.6 1.24c-6.47 5.47-12.29 6.74-15.34 7C6.06 8.34 5 9.32 5 10.53V23.2c0 14.16 14.76 21.85 18.26 23.47.47.22 1 .22 1.47 0C28.23 45.05 43 37.37 43 23.2V10.52c0-1.2-1.06-2.18-2.26-2.28-3.06-.26-8.88-1.53-15.35-7a2.17 2.17 0 0 0-2.79 0Zm5.62 12.46a4.83 4.83 0 0 0 4.86 4.8l-.04 3.45c-1.77 0-3.4-.53-4.75-1.43l-.09 6.99a6.64 6.64 0 0 1-6.69 6.3 6.44 6.44 0 0 1-6.53-6.45 6.63 6.63 0 0 1 7.61-6.4l-.04 3.7a2.93 2.93 0 0 0-3.88 2.7 2.85 2.85 0 0 0 2.89 2.85 2.93 2.93 0 0 0 2.96-2.85l.16-13.66h3.54Z"/>
+  </svg>
+
+  <span>การชำระเงินที่ปลอดภัย</span>
+
+</div>
+
+<!-- BODY -->
+<div style="flex:1;overflow:auto;padding:14px 14px 80px;">
+  <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+    <div>บัญชี</div>
+    <div id="sumUser"></div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+    <div id="sumCoin"></div>
+    <div id="sumPrice"></div>
+  </div>
+
+  <div style="color:#999;font-size:13px;margin:10px 0;">วิธีการชำระเงิน</div>
+
+  <!-- 🔥 เอา pay-option ของมึงมาใส่ตรงนี้ -->
+<!-- ครบทุกอัน -->
+<div class="pay-option active" onclick="selectMethod(this)">
+  <div class="left">
+    <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/MjAyNjAzMDktMTc0MTUyX2ZlYzQ3MC5wbmc=.png">
+    PromptPay
+  </div>
+  <div class="radio"></div>
+</div>
+
+<div class="pay-option" onclick="selectMethod(this)">
+  <div class="left">
+    <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/true-money-border_772a17.png">
+    TrueMoney
+  </div>
+  <div class="radio"></div>
+</div>
+
+<div class="pay-option" onclick="selectMethod(this)">
+  <div class="left">
+    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE0LjYyNSAxMS4yNUMxNC40MTc5IDExLjI1IDE0LjI1IDExLjQxNzkgMTQuMjUgMTEuNjI1VjEyLjM3NUMxNC4yNSAxMi41ODIxIDE0LjQxNzkgMTIuNzUgMTQuNjI1IDEyLjc1SDE3LjYyNUMxNy44MzIxIDEyLjc1IDE4IDEyLjU4MjEgMTggMTIuMzc1VjExLjYyNUMxOCAxMS40MTc5IDE3LjgzMjEgMTEuMjUgMTcuNjI1IDExLjI1SDE0LjYyNVoiIGZpbGw9ImJsYWNrIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNNC41IDIuNjI1QzMuNjcxNTcgMi42MjUgMyAzLjI5NjU3IDMgNC4xMjVWMTMuODc1QzMgMTQuNzAzNCAzLjY3MTU3IDE1LjM3NSA0LjUgMTUuMzc1SDE5LjVDMjAuMzI4NCAxNS4zNzUgMjEgMTQuNzAzNCAyMSAxMy44NzVWNC4xMjVDMjEgMy4yOTY1NyAyMC4zMjg0IDIuNjI1IDE5LjUgMi42MjVINC41Wk00LjUgNC4xMjVIMTkuNVY1LjgxMjVINC41VjQuMTI1Wk00LjUgNy4zMTI1SDE5LjVWMTMuODc1SDQuNVY3LjMxMjVaIiBmaWxsPSJibGFjayIvPgo8L3N2Zz4K">
+    เพิ่มบัตรเครดิตหรือเดบิต
+  </div>
+  <div class="radio"></div>
+</div>
+
+<div class="pay-option" onclick="selectMethod(this)">
+  <div class="left">
+    <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/light_linepay_50ebc8.png">
+    Rabbit LINE Pay
+  </div>
+  <div class="radio"></div>
+</div>
+
+<div class="pay-option" onclick="selectMethod(this)">
+  <div class="left">
+    <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/paypal-light_839c52.png">
+    PayPal
+  </div>
+  <div class="radio"></div>
+</div>
+
+<div class="pay-option" onclick="selectMethod(this)">
+  <div class="left">
+    <img src="https://lf16-co-sg.tiktokcdn-us.com/obj/pipo-sgcompliance/sky/BankTransfer_facae0.png">
+    การโอนเงินผ่านธนาคาร
+  </div>
+  <div class="radio"></div>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div style="padding:14px;border-top:1px solid #eee;">
+
+  <div style="font-size:11px;color:#888;margin-bottom:6px;">
+    เมื่อแตะชำระเงิน แสดงว่าคุณยอมรับนโยบายเกี่ยวกับรายการเสมือนของเรา นอกจากนี้ เมื่อใช้เหรียญจำนวนใดก็ตามภายใน 14 วันหลังจากการซื้อ ถือว่าคุณรับทราบและยืนยันว่าจะไม่มีสิทธิ์ขอคืนเงินอีกต่อไป
+  </div>
+
+  <div style="display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px;">
+    <span>ทั้งหมด</span>
+    <span id="totalPrice">THB0.00</span>
+  </div>
+
+  <div class="pay" onclick="payNow()">
+<svg viewBox="0 0 48 48" width="20" fill="#fff">
+<path d="M28.22 13.7a4.83 4.83 0 0 0 4.86 4.8l-.04 3.45c-1.77 0-3.4-.53-4.75-1.43l-.09 6.99a6.64 6.64 0 0 1-6.69 6.3 6.44 6.44 0 0 1-6.53-6.45 6.63 6.63 0 0 1 7.61-6.4l-.04 3.7a2.97 2.97 0 0 0-3.88 2.7 2.85 2.85 0 0 0 2.89 2.85 2.93 2.93 0 0 0 2.96-2.85l.16-13.66h3.54Z"></path><path d="M5 23.15V10.5c0-1.2 1.06-2.17 2.26-2.28 3.05-.25 8.87-1.52 15.34-6.99.8-.67 2-.67 2.8 0 6.46 5.46 12.28 6.74 15.34 7 1.2.1 2.26 1.07 2.26 2.27v12.65c0 14.13-14.77 21.8-18.27 23.43-.47.22-1 .22-1.47 0C19.76 44.96 5 37.28 5 23.15Zm4-11.1v11.1c0 5.57 2.88 10.04 6.56 13.5 3.1 2.91 6.5 4.86 8.44 5.85a37.07 37.07 0 0 0 8.43-5.85C36.11 33.2 39 28.72 39 23.15V12.04c-3.65-.53-9.1-2.16-15-6.8-5.91 4.64-11.35 6.27-15 6.8Z"></path></svg>
+  ชำระเงินตอนนี้
+</div>
+
+</div>
+</div> <!-- ปิด modal -->
+</div> <!-- ปิด overlay payBox -->
+<!-- LOADING -->
+<div class="overlay" id="loadBox">
+  <div class="modal" style="text-align:center;">
+
+    <div class="loader"></div>
+
+    <h3>Processing your payment</h3>
+    <p id="timer">3</p>
+
+  </div>
+</div>
+
+
+<!-- SUCCESS -->
+<div class="overlay" id="successBox">
+<div class="modal success-modal">
+<div class="check">✔</div>
+<div id="doneText" style="font-size:14px; color:#555; line-height:1.6;"></div>
+<div class="pay" onclick="closeAll()">กลับสู่หน้าหลัก</div>
+</div>
+</div>
+
+<script>
+let coin=0,price=0,paySel=false;
+
+function select(el,c,p){
+document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));
+el.classList.add('active');
+coin=c;price=p;
+
+document.getElementById("payText").innerText=
+"ซื้อในราคา THB"+formatMoney(p);
+
+checkReady(); // 👈 เพิ่มบรรทัดนี้
+}
+
+function openPay(){
+  document.getElementById("totalPrice").innerText =
+"THB"+formatMoney(price);
+let uid=document.getElementById("uid").value;
+if(!uid||!coin){alert("กรอก user และเลือกเหรียญ");return;}
+
+document.getElementById("sumUser").innerText="User: "+uid;
+document.getElementById("sumCoin").innerText="ซื้อเหรียญ: "+formatNumber(coin);
+document.getElementById("sumPrice").innerText="Price: THB"+formatMoney(price);
+
+document.getElementById("payBox").style.display="flex";
+}
+
+function selectMethod(el){
+document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('active'));
+el.classList.add('active');
+paySel=true;
+}
+
+
+
+function closeAll(){
+document.getElementById("successBox").style.display="none";
+}
+
+
+
+function payNow(){
+if(!paySel){alert("เลือกวิธีจ่าย");return;}
+
+document.getElementById("payBox").style.display="none";
+document.getElementById("loadBox").style.display="flex";
+
+let t=3;
+document.getElementById("timer").innerText="กำลังดำเนินการ...";
+
+let i=setInterval(()=>{
+t--;
+
+document.getElementById("timer").innerText=
+"กำลังดำเนินการ ("+t+")";
+
+if(t==0){
+clearInterval(i);
+
+document.getElementById("loadBox").style.display="none";
+document.getElementById("successBox").style.display="flex";
+
+let user=document.getElementById("uid").value;
+
+document.getElementById("doneText").innerHTML =
+"<b>Successful Recharged</b><br><br>" +
+formatNumber(coin)+" Coins were sent to @"+user+"<br>" +
+"This operation has been completed.<br>" +
+"It will be processed within 24 hours.";
+
+// reset
+document.getElementById("uid").value="";
+coin=0;
+price=0;
+paySel=false;
+
+// reset ปุ่ม (สำคัญ)
+document.getElementById("payText").innerText="ซื้อในราคา THB0";
+document.getElementById("payBtn").classList.add("disabled");
+
+// ลบ active
+document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('active'));
+
+}
+},1000);
+}
+
+function formatNumber(num){
+return num.toLocaleString('en-US'); // 10,000
+}
+
+function formatMoney(num){
+return num.toLocaleString('en-US', {
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+}); // 1,700.00
+}
+function checkReady(){
+let uid = document.getElementById("uid").value;
+
+if(uid && coin > 0){
+document.getElementById("payBtn").classList.remove("disabled");
+}else{
+document.getElementById("payBtn").classList.add("disabled");
+}
+}
+</script>
+
+</body>
+</html>
